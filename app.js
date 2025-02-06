@@ -58,7 +58,7 @@ class DictionaryAPI {
 
             // Send the response
             res.writeHead(response.statusCode, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(response));
+            res.end(JSON.stringify(response, null, 2)); // Pretty-print JSON
         });
     }
 
@@ -111,18 +111,24 @@ class DictionaryAPI {
         if (existingEntry) {
             return {
                 statusCode: 409,
-                message: `Warning! '${word}' already exists in the dictionary.`,
-                requestCount: this.requestCount,
+                message: `Request #${this.requestCount}: Warning! '${word}' already exists in the dictionary.`,
+                word,
+                definition: existingEntry.definition,
                 totalEntries: this.dictionary.length
             };
         }
 
         // Add the new word and definition to the dictionary
         this.dictionary.push({ word, definition });
+
+        // Log the dictionary to verify the word is being saved
+        console.log('Current Dictionary:', this.dictionary);
+
         return {
             statusCode: 201,
-            message: `Request #${this.requestCount}: New entry recorded:`,
-            entry: { word, definition },
+            message: `Request #${this.requestCount}: New entry recorded successfully!`,
+            word,
+            definition,
             totalEntries: this.dictionary.length
         };
     }
@@ -145,7 +151,9 @@ class DictionaryAPI {
             return {
                 statusCode: 200,
                 message: `Request #${this.requestCount}: Definition found for '${word}'.`,
-                entry
+                word: entry.word,
+                definition: entry.definition,
+                totalEntries: this.dictionary.length
             };
         } else {
             return {
