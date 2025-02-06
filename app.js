@@ -1,8 +1,8 @@
 const http = require('http');
 const url = require('url');
-const {StringDecoder} = require('string_decoder');
-
-
+const fs = require('fs');
+const path = require('path');
+const { StringDecoder } = require('string_decoder');
 
 class DictionaryAPI {
     constructor() {
@@ -16,8 +16,14 @@ class DictionaryAPI {
 
         // parse URL and query parameters
         const parsedURL = url.parse(req.url, true);
-        const path = parsedURL.pathname;
+        const pathName = parsedURL.pathname;
         const query = parsedURL.query;
+
+        // Serve HTML files
+        if (pathName === '/search' || pathName === '/store') {
+            this.serveHTML(pathName, res);
+            return;
+        }
 
         // parse the request body for POST requests
         const decoder = new StringDecoder('utf-8');
@@ -33,12 +39,12 @@ class DictionaryAPI {
             let response;
 
             // Handle POST requests to add a new word and definition
-            if (path === '/api/definitions' && req.method === 'POST') {
+            if (pathName === '/api/definitions' && req.method === 'POST') {
                 response = this.handlePostRequest(buffer);
             }
 
             // Handle GET requests to retrieve a definition by word
-            else if (path === '/api/definitions' && req.method === 'GET') {
+            else if (pathName === '/api/definitions' && req.method === 'GET') {
                 response = this.handleGetRequest(query);
             }
 
@@ -49,9 +55,32 @@ class DictionaryAPI {
                     message: 'Route not found.'
                 };
             }
+
             // Send the response
             res.writeHead(response.statusCode, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(response));
+        });
+    }
+
+    // Serve HTML files
+    serveHTML(pathName, res) {
+        let filePath;
+
+        if (pathName === '/search') {
+            filePath = path.join(__dirname, 'search.html');
+        } else if (pathName === '/store') {
+            filePath = path.join(__dirname, 'store.html');
+        }
+
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('File not found');
+                return;
+            }
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
         });
     }
 
