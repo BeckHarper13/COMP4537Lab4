@@ -67,9 +67,9 @@ class DictionaryAPI {
         let filePath;
 
         if (pathName === '/search') {
-            filePath = path.join(__dirname, 'search.html');
+            filePath = path.join(__dirname, '/4/public/search.html');
         } else if (pathName === '/store') {
-            filePath = path.join(__dirname, 'store.html');
+            filePath = path.join(__dirname, '/4/public/store.html');
         }
 
         fs.readFile(filePath, (err, data) => {
