@@ -15,12 +15,20 @@
     <p id="response"></p>
 
     <script>
+
+        //Grabs the form from the HTML and adds a listener to the submit button
         document.getElementById('searchForm').addEventListener('submit', function (e) {
             e.preventDefault();
+
+            //Gets the word to be searched for
             const word = document.getElementById('searchWord').value
 
+
+            //Fetches the URL
             fetch(`http://localhost:3000/api/definitions?word=${encodeURIComponent(word)}`)
             .then(response => response.json())
+
+            //Adds the data to the response section
             .then(data => {
                 document.getElementById('response').textContent = JSON.stringify(data, null, 2);
             })

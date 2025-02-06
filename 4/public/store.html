@@ -16,16 +16,18 @@
 
     </form>
 
+    <p id = "response"></p>
+
     <script>
 
         //Gets the Form from the document, and adds a listener to the submit button
-        doucment.getElementById('addForm').addEventListener("submit", function(e){
+        document.getElementById('addForm').addEventListener("submit", function(e){
 
             e.preventDefault();
 
             //Gets the word and the word definition
             const word = document.getElementById("word").value;
-            const definition = document.getElelementById("def").value;
+            const definition = document.getElementById("def").value;
 
             //Creates a fetch request to our website, making a POST method 
             fetch('http://localhost:3000/api/definitions', {
