@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const { StringDecoder } = require('string_decoder');
 
+// Import user messages from en.js
+const messages = require('./4/lang/en/en.js');
+
 class DictionaryAPI {
     constructor() {
         this.dictionary = []; // in memory storage for dictionary entries
@@ -52,7 +55,7 @@ class DictionaryAPI {
             else {
                 response = {
                     statusCode: 404,
-                    message: 'Route not found.'
+                    message: messages.general.routeNotFound
                 };
             }
 
@@ -92,7 +95,7 @@ class DictionaryAPI {
         } catch (e) {
             return {
                 statusCode: 400,
-                message: 'Invalid JSON body.'
+                message: messages.store.invalidJSON
             };
         }
 
@@ -102,7 +105,7 @@ class DictionaryAPI {
         if (!word || !definition || typeof word !== 'string' || typeof definition !== 'string') {
             return {
                 statusCode: 400,
-                message: 'Invalid input. Word and definition must be non-empty strings.'
+                message: messages.store.invalidInput
             };
         }
 
@@ -111,7 +114,7 @@ class DictionaryAPI {
         if (existingEntry) {
             return {
                 statusCode: 409,
-                message: `Request #${this.requestCount}: Warning! '${word}' already exists in the dictionary.`,
+                message: messages.store.duplicate(this.requestCount, word, this.dictionary.length),
                 word,
                 definition: existingEntry.definition,
                 totalEntries: this.dictionary.length
@@ -121,12 +124,9 @@ class DictionaryAPI {
         // Add the new word and definition to the dictionary
         this.dictionary.push({ word, definition });
 
-        // Log the dictionary to verify the word is being saved
-        console.log('Current Dictionary:', this.dictionary);
-
         return {
             statusCode: 201,
-            message: `Request #${this.requestCount}: New entry recorded successfully!`,
+            message: messages.store.success(this.requestCount, word, definition, this.dictionary.length),
             word,
             definition,
             totalEntries: this.dictionary.length
@@ -141,7 +141,7 @@ class DictionaryAPI {
         if (!word || typeof word !== 'string') {
             return {
                 statusCode: 400,
-                message: 'Invalid input. Word must be a non-empty string.'
+                message: messages.search.invalidInput
             };
         }
 
@@ -150,7 +150,7 @@ class DictionaryAPI {
         if (entry) {
             return {
                 statusCode: 200,
-                message: `Request #${this.requestCount}: Definition found for '${word}'.`,
+                message: messages.search.success(this.requestCount, word, entry.definition, this.dictionary.length),
                 word: entry.word,
                 definition: entry.definition,
                 totalEntries: this.dictionary.length
@@ -158,7 +158,7 @@ class DictionaryAPI {
         } else {
             return {
                 statusCode: 404,
-                message: `Request #${this.requestCount}: Word '${word}' not found in the dictionary.`
+                message: messages.search.notFound(this.requestCount, word)
             };
         }
     }
@@ -173,7 +173,7 @@ const server = http.createServer((req, res) => {
 });
 
 // Start the server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
