@@ -78,6 +78,7 @@ class DictionaryAPI {
     }
 
     // Serve HTML files
+    // Written partially by ChatGPT
     serveHTML(pathName, res) {
         let filePath;
 
@@ -114,6 +115,7 @@ class DictionaryAPI {
         const { word, definition } = body;
 
         // Input validation
+        // Written by ChatGPT
         if (!word || !definition || typeof word !== 'string' || typeof definition !== 'string') {
             return {
                 statusCode: 400,
