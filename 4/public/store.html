@@ -17,13 +17,18 @@
     </form>
 
     <script>
+
+        //Gets the Form from the document, and adds a listener to the submit button
         doucment.getElementById('addForm').addEventListener("submit", function(e){
 
             e.preventDefault();
+
+            //Gets the word and the word definition
             const word = document.getElementById("word").value;
             const definition = document.getElelementById("def").value;
 
-            fetch('http://yourdomainname2.wyz/api/definitions', {
+            //Creates a fetch request to our website, making a POST method 
+            fetch('http://localhost:3000/api/definitions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ word, definition })
@@ -36,9 +41,6 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-
-        
-
 
         })
     </script>
