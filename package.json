@@ -1,0 +1,8 @@
+{
+    "name": "lab-4",
+    "version": "20.18.0",
+    "main": "app.js",
+    "scripts": {
+    "start": "node app.js"
+    }
+}
