@@ -25,7 +25,7 @@
             const word = document.getElementById('word').value;
             const definition = document.getElementById('def').value;
 
-            fetch('http://localhost:3000/api/definitions', {
+            fetch('https://seahorse-app-satp2.ondigitalocean.app/api/definitions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ word, definition })
