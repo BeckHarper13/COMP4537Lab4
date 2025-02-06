@@ -17,6 +17,18 @@ class DictionaryAPI {
     handleRequest(req, res) {
         this.requestCount++;
 
+        // Set CORS headers to allow requests from your Vercel domain
+        res.setHeader('Access-Control-Allow-Origin', 'https://comp-4537-lab4-o1tq.vercel.app'); // Allow only your Vercel domain
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allow specific HTTP methods
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow specific headers
+
+        // Handle preflight requests (OPTIONS)
+        if (req.method === 'OPTIONS') {
+            res.writeHead(204); // No content for preflight requests
+            res.end();
+            return;
+        }
+
         // parse URL and query parameters
         const parsedURL = url.parse(req.url, true);
         const pathName = parsedURL.pathname;
