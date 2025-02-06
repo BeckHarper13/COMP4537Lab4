@@ -20,7 +20,7 @@
             e.preventDefault();
             const word = document.getElementById('searchWord').value;
 
-            fetch(`http://localhost:3000/api/definitions?word=${encodeURIComponent(word)}`)
+            fetch(`https://seahorse-app-satp2.ondigitalocean.app/api/definitions?word=${encodeURIComponent(word)}`)
                 .then(response => response.json())
                 .then(data => {
                     const responseElement = document.getElementById('response');
