@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form id = "addForm">
+        <input type="text", id = "word", name="textbox" placeholder="Enter Word">
+        <br>
+        <textarea name="largebox", id = "def", rows="5" cols="30" placeholder="Enter Definition"></textarea>
+        <br><br>
+        <button type = "submit">Submit New Word</button>
+
+
+    </form>
+
+    <script>
+        doucment.getElementById('addForm').addEventListener("submit", function(e){
+
+            e.preventDefault();
+            const word = document.getElementById("word").value;
+            const definition = document.getElelementById("def").value;
+
+            fetch('http://yourdomainname2.wyz/api/definitions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word, definition })
+            })
+            .then(response => response.json())
+            .then(data=> {
+                document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+            })
+
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        
+
+
+        })
+    </script>
+
+
+
+
+
+
+
+    
+</body>
+</html>
