@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { StringDecoder } = require('string_decoder');
 
+
 // Import user messages from en.js
 const messages = require('./4/lang/en/en.js');
 
@@ -33,6 +34,12 @@ class DictionaryAPI {
         const parsedURL = url.parse(req.url, true);
         const pathName = parsedURL.pathname;
         const query = parsedURL.query;
+
+        // Serve static module files
+        if (pathName.startsWith('/modules/')) {
+            this.serveStaticFile(pathName, res, 'modules');
+            return;
+        }
 
         // Serve HTML files
         if (pathName === '/search' || pathName === '/store') {
@@ -96,6 +103,33 @@ class DictionaryAPI {
             }
 
             res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
+        });
+    }
+
+    // Serve static files (modules)
+    serveStaticFile(pathName, res, staticDir) {
+        const filePath = path.join(__dirname, `./4/${staticDir}`, pathName.replace(`/${staticDir}/`, ''));
+
+        // Determine content type
+        const extname = path.extname(filePath);
+        const mimeTypes = {
+            '.js': 'application/javascript',
+            '.json': 'application/json',
+            '.css': 'text/css',
+            '.html': 'text/html'
+        };
+
+        const contentType = mimeTypes[extname] || 'application/octet-stream';
+
+        fs.readFile(filePath, (err, data) => {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('File not found');
+                return;
+            }
+
+            res.writeHead(200, { 'Content-Type': contentType });
             res.end(data);
         });
     }
